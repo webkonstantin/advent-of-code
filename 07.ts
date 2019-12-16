@@ -1,7 +1,7 @@
 import assert from 'assert';
 import get from './api';
 import {splitNumbers} from './utils';
-import {exec, execGenerator} from './05';
+import {exec, execGenerator} from './intcode';
 import {permutation} from 'js-combinatorics';
 
 const signal = (program: number[], phase: number[]) => {

@@ -1,9 +1,8 @@
 import assert from 'assert';
+import lodash from 'lodash';
 import get from './api';
 import {splitLines} from './utils';
-import lodash from 'lodash';
-
-import {Point} from './03';
+import {Point} from './types';
 
 const subtractPoints = (p1: Point, p2: Point): Point => {
   return [

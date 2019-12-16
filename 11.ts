@@ -1,7 +1,8 @@
 import get from './api';
 import {splitNumbers} from './utils';
 import {exec, execGenerator, Intcode, IntcodeInput} from './intcode';
-import {addPoints, Point} from './03';
+import {Point} from './types';
+import {addPoints} from './utils';
 
 enum COLOR {
   BLACK = 0,

@@ -1,15 +1,7 @@
 import assert from 'assert';
 import get from './api';
-import {splitLines} from './utils';
-
-export type Point = [number, number];
-
-export const addPoints = (p1: Point, p2: Point): Point => {
-  return [
-    p1[0] + p2[0],
-    p1[1] + p2[1],
-  ];
-}
+import {addPoints, splitLines} from './utils';
+import {Point} from './types';
 
 const distanceManhattan = (p1: Point, p2: Point): number => {
   return Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1]);
@@ -160,4 +152,3 @@ const run = async () => {
 if (require.main === module) {
   run();
 }
-

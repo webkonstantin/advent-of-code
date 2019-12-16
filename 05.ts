@@ -1,67 +1,86 @@
 import assert from 'assert';
 import get from './api';
-
-interface Result {
-  output?: number;
-  jump?: number;
-}
+import {splitNumbers} from './utils';
 
 interface ParsedOpcode {
-  operate: (a: number[], ...numbers: number[]) => Result | void;
+  operate: (a: number[], ...numbers: number[]) => Generator<number | undefined, OpcodeResult | undefined, number>;
   length: number;
 }
 
-function parseOpcode(instruction: number, input?: number) {
+interface OpcodeResult {
+  jump?: number;
+}
+
+interface ExecResult {
+  program: number[];
+  outputs: number[];
+}
+function parseOpcode(instruction: number, input: number[] = []): ParsedOpcode {
   const opcode = Number(String(instruction).slice(-2));
   const modes = String(instruction).slice(0, -2).split('').reverse();
 
-  const readParam = (a: number[], params: number[], pos: number): number => {
+  const readParam = (program: number[], params: number[], pos: number): number => {
     if (Number(modes[pos] || 0)) {
       return params[pos];
     }
-    return a[params[pos]];
+    return program[params[pos]];
+  };
+
+  const appendInput = (n?: number) => {
+    if (typeof n === 'number') {
+      input.push(n);
+    }
   };
 
   const opcodes: Record<number, () => ParsedOpcode> = {
     1() {
       return {
-        operate(a, i, ...params) {
-          a[params[2]] = readParam(a, params, 0) + readParam(a, params, 1);
+        *operate(program, i, ...params) {
+          program[params[2]] = readParam(program, params, 0) + readParam(program, params, 1);
+
+          return undefined;
         },
         length: 4,
       };
     },
     2() {
       return {
-        operate(a, i, ...params) {
-          a[params[2]] = readParam(a, params, 0) * readParam(a, params, 1);
+        *operate(program, i, ...params) {
+          program[params[2]] = readParam(program, params, 0) * readParam(program, params, 1);
+
+          return undefined;
         },
         length: 4,
       };
     },
     3() {
       return {
-        operate(a, i, ...params) {
-          a[params[0]] = input;
+        *operate(program, i, ...params) {
+          while (input.length === 0) {
+            appendInput(yield);
+          }
+
+          program[params[0]] = input.shift();
+
+          return undefined;
         },
         length: 2,
       };
     },
     4() {
       return {
-        operate(a, i, ...params) {
-          return {
-            output: readParam(a, params, 0),
-          };
+        *operate(program, i, ...params) {
+          appendInput(yield readParam(program, params, 0));
+          return undefined;
         },
         length: 2,
       };
     },
     5() {
       return {
-        operate(a, i, ...params) {
-          if (readParam(a, params, 0)) {
-            return {jump: readParam(a, params, 1)};
+        *operate(program, i, ...params) {
+          if (readParam(program, params, 0)) {
+            return {jump: readParam(program, params, 1)};
           }
         },
         length: 3,
@@ -69,9 +88,9 @@ function parseOpcode(instruction: number, input?: number) {
     },
     6() {
       return {
-        operate(a, i, ...params) {
-          if (!readParam(a, params, 0)) {
-            return {jump: readParam(a, params, 1)};
+        *operate(program, i, ...params) {
+          if (!readParam(program, params, 0)) {
+            return {jump: readParam(program, params, 1)};
           }
         },
         length: 3,
@@ -79,16 +98,18 @@ function parseOpcode(instruction: number, input?: number) {
     },
     7() {
       return {
-        operate(a, i, ...params) {
-          a[params[2]] = Number(readParam(a, params, 0) < readParam(a, params, 1));
+        *operate(program, i, ...params) {
+          program[params[2]] = Number(readParam(program, params, 0) < readParam(program, params, 1));
+          return undefined;
         },
         length: 4,
       };
     },
     8() {
       return {
-        operate(a, i, ...params) {
-          a[params[2]] = Number(readParam(a, params, 0) === readParam(a, params, 1));
+        *operate(program, i, ...params) {
+          program[params[2]] = Number(readParam(program, params, 0) === readParam(program, params, 1));
+          return undefined;
         },
         length: 4,
       };
@@ -98,40 +119,43 @@ function parseOpcode(instruction: number, input?: number) {
   return opcodes[opcode]();
 }
 
-const exec = (program: number[], input?: number) => {
-  const a = program.slice();
-
+export function* execGenerator(program: number[], input: number[] = []): Generator<number, void, number> {
   let i = 0;
 
-  const outputs: number[] = [];
-
-  while (a[i] !== 99 && i < a.length) {
-
-    const {operate, length} = parseOpcode(a[i], input);
-
-    const result = operate(a, i, ...a.slice(i + 1, i + length));
-
-    if (result && typeof result.output !== 'undefined') {
-      outputs.push(result.output);
+  while (program[i] !== 99) {
+    if (i >= program.length) {
+      throw new Error('Program failure!');
     }
+    const {operate, length} = parseOpcode(program[i], input);
+    const result = yield* operate(program, i, ...program.slice(i + 1, i + length));
+
     if (result && typeof result.jump !== 'undefined') {
       i = result.jump;
     } else {
       i += length;
     }
   }
+}
 
-  return [a, outputs];
+export const exec = (program: number[], input: number[] = []): ExecResult => {
+  program = program.slice();
+
+  const gen = execGenerator(program, input);
+
+  const outputs: number[] = [...gen];
+
+  return {
+    program,
+    outputs,
+  };
 };
 
-const splitNumbers = (str: string) => str.split(',').map(Number);
+const execSplitJoin = (str: string) => exec(splitNumbers(str)).program.join(',');
 
-const execSplitJoin = (str: string) => exec(splitNumbers(str))[0].join(',');
-
-// assert.equal(
-//   execSplitJoin('1,9,10,3,2,3,11,0,99,30,40,50'),
-//   '3500,9,10,70,2,3,11,0,99,30,40,50'
-// );
+assert.equal(
+  execSplitJoin('1,9,10,3,2,3,11,0,99,30,40,50'),
+  '3500,9,10,70,2,3,11,0,99,30,40,50'
+);
 assert.equal(
   execSplitJoin('1,0,0,0,99'),
   '2,0,0,0,99'
@@ -157,14 +181,14 @@ assert.equal(
   '30,1,1,4,2,5,6,0,99'
 );
 
-let a: number[];
-
 const run = async () => {
   const data = await get('2019/day/5/input');
-  a = splitNumbers(data);
+  const a = splitNumbers(data);
 
-  console.log(exec(a, 1)[1].pop());
-  console.log(exec(a, 5)[1].pop());
+  console.log(exec(a, [1]).outputs.pop());
+  console.log(exec(a, [5]).outputs.pop());
 };
 
-run();
+if (require.main === module) {
+  run();
+}

@@ -2,7 +2,7 @@ import assert from 'assert';
 import get from './api';
 import {splitLines} from './utils';
 
-type Point = [number, number];
+export type Point = [number, number];
 
 const addPoints = (p1: Point, p2: Point): Point => {
   return [
@@ -11,7 +11,7 @@ const addPoints = (p1: Point, p2: Point): Point => {
   ];
 }
 
-const distance = (p1: Point, p2: Point): number => {
+const distanceManhattan = (p1: Point, p2: Point): number => {
   return Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1]);
 };
 
@@ -67,7 +67,7 @@ const findIntersection = (motions1: string[], motions2: string[]) => {
 
   travelMultiple(p, motions2, (point: Point) => {
     if (s1.has(point.toString())) {
-      const distanceToCurrent = distance(p, point);
+      const distanceToCurrent = distanceManhattan(p, point);
       if (distanceToCurrent < minDistance) {
         minDistance = distanceToCurrent;
       }

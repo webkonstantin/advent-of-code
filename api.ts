@@ -6,7 +6,8 @@ const api = axios.create({
   baseURL: 'https://adventofcode.com',
   headers: {
     Cookie: `session=${process.env.SESSION_ID};`
-  }
+  },
+  transformResponse: [], // don't try to parse json
 })
 
 slugify.extend({'/': '-'});
@@ -18,9 +19,8 @@ export default async function get(url: string) {
     return fs.readFileSync(path).toString();
   }
 
-  const data = (await api.get(url)).data as string;
+  const response = await api.get<string>(url);
+  fs.writeFileSync(path, response.data);
 
-  fs.writeFileSync(path, data);
-
-  return data;
+  return response.data;
 };

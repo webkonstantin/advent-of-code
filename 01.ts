@@ -35,4 +35,7 @@ const run = async () => {
   }, 0))
 };
 
-run();
+if (require.main === module) {
+  run();
+}
+

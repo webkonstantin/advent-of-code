@@ -20,7 +20,15 @@ enum ParamMode {
   RELATIVE = 2,
 }
 
-export function* execGenerator(program: number[], input: number[] = []): Generator<number, void, number> {
+export type Intcode = Generator<number, void, number>;
+
+export interface IntcodeInput {
+  push?: Array<number>['push'];
+  length: Array<number>['length'];
+  shift: Array<number>['shift'];
+}
+
+export function* execGenerator(program: number[], input: IntcodeInput = []): Intcode {
   let pointer = 0;
   let relativeBase = 0;
 

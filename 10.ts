@@ -159,4 +159,7 @@ const run = async () => {
   console.log(findVaporized(data, 200));
 };
 
-run();
+if (require.main === module) {
+  run();
+}
+

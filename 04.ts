@@ -46,4 +46,7 @@ const run = async () => {
   console.log(c2)
 };
 
-run();
+if (require.main === module) {
+  run();
+}
+

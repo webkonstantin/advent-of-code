@@ -87,4 +87,7 @@ const run = async () => {
   console.log(orbitTransfers(data));
 };
 
-run();
+if (require.main === module) {
+  run();
+}
+

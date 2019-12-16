@@ -4,7 +4,7 @@ import {splitLines} from './utils';
 
 export type Point = [number, number];
 
-const addPoints = (p1: Point, p2: Point): Point => {
+export const addPoints = (p1: Point, p2: Point): Point => {
   return [
     p1[0] + p2[0],
     p1[1] + p2[1],
@@ -157,4 +157,7 @@ const run = async () => {
   ));
 };
 
-run();
+if (require.main === module) {
+  run();
+}
+

@@ -69,4 +69,7 @@ const run = async () => {
   }
 };
 
-run();
+if (require.main === module) {
+  run();
+}
+

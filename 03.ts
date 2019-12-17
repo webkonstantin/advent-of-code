@@ -1,13 +1,13 @@
 import assert from 'assert';
 import get from './api';
-import {addPoints, splitLines} from './utils';
-import {Point} from './types';
+import {sumPoints, splitLines} from './utils';
+import {Point2} from './types';
 
-const distanceManhattan = (p1: Point, p2: Point): number => {
+const distanceManhattan = (p1: Point2, p2: Point2): number => {
   return Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1]);
 };
 
-const directions: Record<string, Point> = {
+const directions: Record<string, Point2> = {
   U: [0, 1],
   R: [1, 0],
   D: [0, -1],
@@ -21,18 +21,18 @@ const parseMotion = (motion: string) => {
   return {direction, distance};
 };
 
-const travel = (p: Point, motion: string, cb?: (p: Point) => void): Point => {
+const travel = (p: Point2, motion: string, cb?: (p: Point2) => void): Point2 => {
   let {direction, distance} = parseMotion(motion);
 
   while (distance--) {
-    p = addPoints(p, direction);
+    p = sumPoints(p, direction);
     cb && cb(p);
   }
 
   return p;
 }
 
-const travelMultiple = (p: Point, motions: string[], cb?: (p: Point, steps: number) => void): Point => {
+const travelMultiple = (p: Point2, motions: string[], cb?: (p: Point2, steps: number) => void): Point2 => {
   let steps = 0;
   motions.forEach(motion => {
     p = travel(p, motion, (point) => {
@@ -45,19 +45,19 @@ const travelMultiple = (p: Point, motions: string[], cb?: (p: Point, steps: numb
 }
 
 const findIntersection = (motions1: string[], motions2: string[]) => {
-  const p: Point = [0, 0];
+  const p: Point2 = [0, 0];
 
   const s1 = new Set<string>();
 
   let minDistance = Infinity;
 
-  travelMultiple(p, motions1, (point: Point) => {
+  travelMultiple(p, motions1, (point: Point2) => {
     if (!s1.has(point.toString())) {
       s1.add(point.toString());
     }
   });
 
-  travelMultiple(p, motions2, (point: Point) => {
+  travelMultiple(p, motions2, (point: Point2) => {
     if (s1.has(point.toString())) {
       const distanceToCurrent = distanceManhattan(p, point);
       if (distanceToCurrent < minDistance) {
@@ -70,19 +70,19 @@ const findIntersection = (motions1: string[], motions2: string[]) => {
 }
 
 const findIntersectionSteps = (motions1: string[], motions2: string[]) => {
-  const p: Point = [0, 0];
+  const p: Point2 = [0, 0];
 
   const s1 = new Map<string, number>();
 
   let minSteps = Infinity;
 
-  travelMultiple(p, motions1, (point: Point, steps: number) => {
+  travelMultiple(p, motions1, (point: Point2, steps: number) => {
     if (!s1.has(point.toString())) {
       s1.set(point.toString(), steps);
     }
   });
 
-  travelMultiple(p, motions2, (point: Point, steps: number) => {
+  travelMultiple(p, motions2, (point: Point2, steps: number) => {
     if (s1.has(point.toString())) {
       const stepsToPoint = s1.get(point.toString()) + steps;
       if (stepsToPoint < minSteps) {

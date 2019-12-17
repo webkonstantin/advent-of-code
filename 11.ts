@@ -1,8 +1,8 @@
 import get from './api';
 import {splitNumbers} from './utils';
-import {exec, execGenerator, Intcode, IntcodeInput} from './intcode';
-import {Point} from './types';
-import {addPoints} from './utils';
+import {execGenerator, Intcode, IntcodeInput} from './intcode';
+import {Point2, Vector2} from './types';
+import {sumPoints} from './utils';
 
 enum COLOR {
   BLACK = 0,
@@ -14,9 +14,7 @@ enum TURN {
   RIGHT = 1,
 }
 
-type Vector = Point;
-
-const UP: Vector = [0, -1];
+const UP: Vector2 = [0, -1];
 
 type CoordsString = string;
 
@@ -31,8 +29,8 @@ class Robot {
   private initialColor = COLOR.BLACK;
   private panels = new Map<CoordsString, COLOR>();
   private painted = new Set<CoordsString>();
-  private position: Point = [0, 0];
-  private direction: Vector = UP;
+  private position: Point2 = [0, 0];
+  private direction: Vector2 = UP;
   private intcode: Intcode;
   private next: IteratorResult<number>;
 
@@ -55,18 +53,18 @@ class Robot {
     this.move();
   }
 
-  private key(point?: Point): CoordsString {
+  private key(point?: Point2): CoordsString {
     return (point || this.position).toString();
   }
 
-  cameraInput(point?: Point): COLOR {
+  cameraInput(point?: Point2): COLOR {
     return this.panels.has(this.key(point))
       ? this.panels.get(this.key(point))
       : this.initialColor;
   }
 
   private move() {
-    this.position = addPoints(this.position, this.direction);
+    this.position = sumPoints(this.position, this.direction);
   }
 
   paint(color: COLOR): void {
@@ -78,8 +76,8 @@ class Robot {
     return this.painted.size;
   }
 
-  getPaintedPoints(): [Point[], Rect] {
-    const points: Point[] = [];
+  getPaintedPoints(): [Point2[], Rect] {
+    const points: Point2[] = [];
     const rect: Rect = {
       top: -0,
       right: 0,
@@ -87,7 +85,7 @@ class Robot {
       left: -0,
     };
     for (const coords of this.painted.keys()) {
-      const point = coords.split(',').map(Number) as Point;
+      const point = coords.split(',').map(Number) as Point2;
       points.push(point);
 
       rect.left = Math.min(rect.left, point[0]);

@@ -23,6 +23,7 @@ function makeTree(s: string): OrbitsTree {
   return orbits;
 }
 
+// Parents
 function* orbitees(orbits: OrbitsTree, key: string) {
   let current = orbits[key];
   while (current.orbitee) {
@@ -54,7 +55,8 @@ const orbitTransfers = (s: string): number => {
   }
 };
 
-assert.equal(totalOrbitsNumber(`COM)B
+assert.equal(totalOrbitsNumber(
+`COM)B
 B)C
 C)D
 D)E
@@ -66,7 +68,8 @@ E)J
 J)K
 K)L`), 42);
 
-assert.equal(orbitTransfers(`COM)B
+assert.equal(orbitTransfers(
+`COM)B
 B)C
 C)D
 D)E

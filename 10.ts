@@ -2,34 +2,34 @@ import assert from 'assert';
 import lodash from 'lodash';
 import get from './api';
 import {splitLines} from './utils';
-import {Point} from './types';
+import {Point2} from './types';
 
-const subtractPoints = (p1: Point, p2: Point): Point => {
+const subtractPoints = (p1: Point2, p2: Point2): Point2 => {
   return [
     p1[0] - p2[0],
     p1[1] - p2[1],
   ];
 }
 
-const vectorLength = (vector: Point) => {
+const vectorLength = (vector: Point2) => {
   return Math.sqrt(Math.pow(vector[0], 2) + Math.pow(vector[1], 2));
 }
 
-function getPoints(data: string): Point[] {
+function getPoints(data: string): Point2[] {
   return splitLines(data).map((line: string, y: number) => {
     const chars: string[] = line.split('');
 
     return chars.map((char: string, x: number) => {
       if (char === '#') {
-        return [x, y] as Point;
+        return [x, y] as Point2;
       }
     });
   }).flat(1).filter(Boolean);
 }
 
-function findMaxPoint(points: Point[]) {
+function findMaxPoint(points: Point2[]) {
   let maxVisible = -Infinity;
-  let maxPoint: Point;
+  let maxPoint: Point2;
 
   points.forEach(point => {
     const directions = points.filter(p => p !== point).map(otherPoint => {

@@ -1,3 +1,6 @@
+export type Point1 = [number];
+export type Vector1 = Point1;
+
 export type Point2 = [number, number];
 export type Vector2 = Point2;
 

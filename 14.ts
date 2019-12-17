@@ -1,7 +1,6 @@
+import get from './api';
 import {splitLines} from './utils';
 import {groupBy, keyBy, sum} from 'lodash';
-import get from './api';
-var util = require('util');
 
 type Amount = number;
 type Chemical = string;
@@ -22,10 +21,6 @@ function parseChemicalAmount(c: string): ChemicalAmount {
   };
 }
 
-function stringifyChemicalAmount(c: ChemicalAmount): string {
-  return `${c.amount} ${c.chemical}`;
-}
-
 class Reaction {
   inputs: ChemicalAmount[];
   output: ChemicalAmount;
@@ -43,18 +38,6 @@ class Reaction {
     this.output = output;
   }
 
-  [util.inspect.custom](hint: string) {
-    if (hint == 'number') {
-      return 42;
-    }
-    return '123';
-  }
-
-  toString() {
-    const inputs = this.inputs.map(stringifyChemicalAmount).join(', ');
-    return `${inputs} => ${stringifyChemicalAmount(this.output)}`;
-  }
-
   produce(amount: Amount, leftovers: ChemicalAmountsRecord): ChemicalAmount[] {
     const m = Math.ceil(amount / this.output.amount);
     const extra = this.output.amount * m - amount;
@@ -65,22 +48,14 @@ class Reaction {
       return chemicalAmount(amountRequired, input.chemical);
     });
 
-    console.log(inputsRequired, leftovers);
-
     inputsRequired.map(input => {
       if (leftovers[input.chemical]) {
         const taken = Math.min(leftovers[input.chemical], input.amount);
 
-        console.log('taken', taken, input.chemical);
-
         input.amount -= taken;
         leftovers[input.chemical] -= taken;
-
-        if (leftovers[input.chemical] === 0) delete leftovers[input.chemical];
       }
     });
-
-    console.log(inputsRequired, leftovers);
 
     if (extra > 0) {
       leftovers[this.output.chemical] = leftovers[this.output.chemical] || 0;
@@ -95,52 +70,75 @@ function chemicalAmount(amount: number, chemical: string): ChemicalAmount {
   return {amount, chemical};
 }
 
-export function runA(data: string) {
-  const reactions: Reaction[] = splitLines(data).map(Reaction.parse);
-  const reactionsLookup: Record<Chemical, Reaction> = keyBy(reactions, (v) => v.output.chemical);
+function produce(v: ChemicalAmount, reactions: Record<Chemical, Reaction>, leftovers: ChemicalAmountsRecord = {}): number {
+  let ore = 0;
+  let required: ChemicalAmount[] = [v];
 
-  function need(v: ChemicalAmount): number {
-    let ore = 0;
-    let required: ChemicalAmount[] = [v];
+  while (required.length) {
+    const next = required.shift();
+    const reaction = reactions[next.chemical];
 
-    const leftovers: ChemicalAmountsRecord = {};
+    required.push(...reaction.produce(next.amount, leftovers));
 
-    while (required.length) {
-      const next = required.shift();
-      const reaction = reactionsLookup[next.chemical];
+    // Squash duplicates
+    required = Object.entries(groupBy(required, 'chemical')).map(([chem, entries]) => {
+      return chemicalAmount(sum(entries.map(e => e.amount)), chem);
+    });
 
-      required.push(...reaction.produce(next.amount, leftovers));
-
-      // Squash duplicates
-      required = Object.entries(groupBy(required, 'chemical')).map(([chem, entries]) => {
-        return chemicalAmount(sum(entries.map(e => e.amount)), chem);
-      });
-
-      // Count ore
-      required = required.filter(v => {
-        if (v.chemical === 'ORE') {
-          ore += v.amount;
-          return false;
-        }
-        return true;
-      });
-
-      console.log('=>', required.map(r => [r.amount, r.chemical]));
-      console.log(leftovers);
-      console.log('=================')
-    }
-
-
-    return ore;
+    // Count ore
+    required = required.filter(v => {
+      if (v.chemical === 'ORE') {
+        ore += v.amount;
+        return false;
+      }
+      return true;
+    });
   }
 
-  return need(chemicalAmount(1, 'FUEL'));
+  return ore;
+}
+
+export function runA(data: string) {
+  const reactions = keyBy(splitLines(data).map(Reaction.parse), reaction => reaction.output.chemical);
+
+  const leftovers = {};
+
+  const fuel = chemicalAmount(1, 'FUEL');
+
+  return produce(fuel, reactions, leftovers);
+}
+
+export function runB(data: string) {
+  const reactions = keyBy(splitLines(data).map(Reaction.parse), reaction => reaction.output.chemical);
+
+  const x = 1000000000000;
+
+  function produceFuel(a = 1) {
+    return produce(chemicalAmount(a, 'FUEL'), reactions);
+  }
+
+  const search = function (start: number, end: number): number {
+    if (start >= end) return end;
+    let mid = Math.floor((start + end) / 2);
+
+    const ore = produceFuel(mid);
+    if (ore === x) return mid;
+
+    if (ore > x) {
+      return search(start, mid - 1);
+    } else {
+      return search(mid + 1, end);
+    }
+  }
+
+  return search(1000000, 5000000);
 }
 
 const run = async () => {
   const data = await get('2019/day/14/input');
 
   console.log(runA(data));
+  console.log(runB(data));
 
 //   console.log(runA(`9 ORE => 2 A
 // 8 ORE => 3 B

@@ -45,3 +45,5 @@ export function primeFactorization(number: number, result: number[] = []): numbe
 
   return (x === number) ? result : primeFactorization((number / x), result);
 }
+
+export const sleep = (d: number) => new Promise(resolve => setTimeout(() => resolve(), d));

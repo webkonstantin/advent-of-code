@@ -6,3 +6,12 @@ export type Vector2 = Point2;
 
 export type Point3 = [number, number, number];
 export type Vector3 = Point3;
+
+export type CoordsString = string;
+
+export interface Rect {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}

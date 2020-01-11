@@ -1,4 +1,5 @@
 import {zip} from 'lodash';
+import {CoordsString, Point2} from './types';
 
 export const splitLines = (str: string): string[] => str.match(/[^\r\n]+/g);
 export const splitNumbers = (str: string): number[] => str.split(',').map(Number);
@@ -11,6 +12,10 @@ export function sumPoints<T extends number[]>(p1: T, p2: T): T {
 
 export function negatePoint<T extends number[]>(p1: T): T {
   return p1.map(v => -v) as T;
+}
+
+export function parseCoords(coords: CoordsString): Point2 {
+  return coords.split(',').map(Number) as Point2;
 }
 
 export function gcd(a: number, b: number): number {

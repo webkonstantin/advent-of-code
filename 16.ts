@@ -83,7 +83,7 @@ function runB(seq: string, steps = 1, length: number = seq.length, range: [numbe
   return result;
 }
 
-const range = (n: number) => [...Array(n).keys()];
+const getRange = (n: number) => [...Array(n).keys()];
 
 const run = async () => {
   const data = await get('2019/day/16/input');
@@ -96,7 +96,7 @@ const run = async () => {
     const getPatternValue = memoize((repeat: number, position: number) => {
       return [...genPattern(repeat, length)][position];
     });
-    return range(length).map(i => getPatternValue(rep, i));
+    return getRange(length).map(i => getPatternValue(rep, i));
   }
 
   function getPattern2(rep: number, length: number) {

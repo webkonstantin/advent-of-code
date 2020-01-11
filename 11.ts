@@ -1,7 +1,7 @@
 import get from './api';
 import {splitNumbers} from './utils';
 import {execGenerator, Intcode, IntcodeInput} from './intcode';
-import {Point2, Vector2} from './types';
+import {CoordsString, Point2, Rect, Vector2} from './types';
 import {sumPoints} from './utils';
 
 enum COLOR {
@@ -15,15 +15,6 @@ enum TURN {
 }
 
 const UP: Vector2 = [0, -1];
-
-type CoordsString = string;
-
-interface Rect {
-  top: number;
-  right: number;
-  bottom: number;
-  left: number;
-}
 
 class Robot {
   private initialColor = COLOR.BLACK;

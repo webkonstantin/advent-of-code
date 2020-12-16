@@ -1,5 +1,5 @@
 import assert from 'assert';
-import get from './api';
+import get from '../api';
 import {splitLines} from './utils';
 
 function fuelRequired(n: number) {

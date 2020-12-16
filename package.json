@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "axios": "^0.19.0",
+    "itertools": "^1.6.1",
     "js-combinatorics": "^0.5.4",
     "lodash": "^4.17.15",
     "memoizee": "^0.4.14",

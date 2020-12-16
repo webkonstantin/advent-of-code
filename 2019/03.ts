@@ -1,5 +1,5 @@
 import assert from 'assert';
-import get from './api';
+import get from '../api';
 import {sumPoints, splitLines} from './utils';
 import {Point2} from './types';
 

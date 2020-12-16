@@ -1,6 +1,6 @@
 import assert from 'assert';
 import lodash from 'lodash';
-import get from './api';
+import get from '../api';
 import {splitLines} from './utils';
 import {Point2} from './types';
 

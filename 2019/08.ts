@@ -1,4 +1,4 @@
-import get from './api';
+import get from '../api';
 
 const w = 25;
 const h = 6;

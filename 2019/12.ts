@@ -2,7 +2,7 @@ import {lcm, negatePoint, splitLines, sumPoints} from './utils';
 import {Point3, Vector1, Vector3} from './types';
 import {combination} from 'js-combinatorics';
 import {sum, zip} from 'lodash';
-import get from './api';
+import get from '../api';
 
 interface Moon<T extends number[]> {
   pos: T;

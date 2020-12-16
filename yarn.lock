@@ -97,6 +97,13 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.0.0"
 
+"@babel/runtime@^7.6.0":
+  version "7.12.5"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.12.5.tgz#410e7e487441e1b360c29be715d870d9b985882e"
+  integrity sha512-plcc+hbExy3McchJCEQG3knOsuh3HH+Prx1P6cLIkET/0dLuQDEnrT+s27Axgc9bqfsmNUNHfscgMUdBpC9xfg==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/template@^7.4.0", "@babel/template@^7.7.4":
   version "7.7.4"
   resolved "https://registry.npmjs.org/@babel/template/-/template-7.7.4.tgz#428a7d9eecffe27deac0a98e23bf8e3675d2a77b"
@@ -1931,6 +1938,13 @@ istanbul-reports@^2.2.6:
   dependencies:
     handlebars "^4.1.2"
 
+itertools@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/itertools/-/itertools-1.6.1.tgz#fda1ee6d7e150888c7a9db1f141924cf868ec68b"
+  integrity sha512-V4/0OGqJNtDatQnRdG1/WH4EmHSOMr/o9Zh58DggeQjsHlCLPJe8KECGjb00uv4lAUGfZw2znBskFMxy+EPdxw==
+  dependencies:
+    "@babel/runtime" "^7.6.0"
+
 jest-changed-files@^24.9.0:
   version "24.9.0"
   resolved "https://registry.npmjs.org/jest-changed-files/-/jest-changed-files-24.9.0.tgz#08d8c15eb79a7fa3fc98269bc14b451ee82f8039"
@@ -2524,7 +2538,7 @@ map-visit@^1.0.0:
 
 memoizee@^0.4.14:
   version "0.4.14"
-  resolved "https://registry.npmjs.org/memoizee/-/memoizee-0.4.14.tgz#07a00f204699f9a95c2d9e77218271c7cd610d57"
+  resolved "https://registry.yarnpkg.com/memoizee/-/memoizee-0.4.14.tgz#07a00f204699f9a95c2d9e77218271c7cd610d57"
   integrity sha512-/SWFvWegAIYAO4NQMpcX+gcra0yEZu4OntmUdrBaWrJncxOqAziGFlHxc7yjKVK2uu3lpPW27P27wkR82wA8mg==
   dependencies:
     d "1"
@@ -3098,6 +3112,11 @@ realpath-native@^1.1.0:
   integrity sha512-wlgPA6cCIIg9gKz0fgAPjnzh4yR/LnXovwuo9hvyGvx3h8nX4+/iLZplfUWasXpqD8BdnGnP5njOFjkUwPzvjA==
   dependencies:
     util.promisify "^1.0.0"
+
+regenerator-runtime@^0.13.4:
+  version "0.13.7"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.7.tgz#cac2dacc8a1ea675feaabaeb8ae833898ae46f55"
+  integrity sha512-a54FxoJDIr27pgf7IgeQGxmqUNYrcV338lf/6gH456HZ/PhX+5BcwHXG9ajESmwe6WRO0tAzRUrRmNONWgkrew==
 
 regex-not@^1.0.0, regex-not@^1.0.2:
   version "1.0.2"

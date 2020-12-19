@@ -1,4 +1,4 @@
-import get from './api';
+import get from '../api';
 import {CoordsString, Point2, Rect, Vector2} from './types';
 import {execGenerator, Intcode, IntcodeInput} from './intcode';
 import {parseCoords, sleep, splitNumbers, sumPoints} from './utils';

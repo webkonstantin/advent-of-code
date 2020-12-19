@@ -1,4 +1,4 @@
-import get from './api';
+import get from '../api';
 import {negatePoint, sleep, splitNumbers, sumPoints} from './utils';
 import {execGenerator, Intcode, IntcodeInput} from './intcode';
 import {Point2} from './types';

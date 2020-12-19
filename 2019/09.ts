@@ -1,4 +1,4 @@
-import get from './api';
+import get from '../api';
 import {splitNumbers} from './utils';
 import {exec} from './intcode';
 

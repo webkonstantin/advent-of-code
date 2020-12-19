@@ -1,4 +1,4 @@
-import get from './api';
+import get from '../api';
 import {splitNumbers} from './utils';
 import {execGenerator, Intcode, IntcodeInput} from './intcode';
 import {CoordsString, Point2, Rect, Vector2} from './types';

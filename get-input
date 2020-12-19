@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+# Usage:
+# SESSION_ID=xxx ./get-input 2000 1
+
+set -e
+
+curl -X GET --location "https://adventofcode.com/$1/day/$2/input" -H "Cookie: session=$SESSION_ID"

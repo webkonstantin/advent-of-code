@@ -1,8 +1,8 @@
-const { splitNumbers } = require('./dist/utils');
-const { exec } = require('./dist/intcode');
+import {exec} from "./intcode";
+import {splitNumbers} from "./utils";
 
-const execProgram = (str) => exec(splitNumbers(str)).program.join(',');
-const execOutputs = (str) => exec(splitNumbers(str)).outputs.join(',');
+const execProgram = (str: string) => exec(splitNumbers(str)).program.join(',');
+const execOutputs = (str: string) => exec(splitNumbers(str)).outputs.join(',');
 
 test('intcode', () => {
   expect(execProgram('1,9,10,3,2,3,11,0,99,30,40,50')).toBe('3500,9,10,70,2,3,11,0,99,30,40,50');

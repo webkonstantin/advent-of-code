@@ -1,4 +1,4 @@
-import get from './api';
+import get from '../api';
 import memoize from 'memoizee';
 
 const basePattern = [0, 1, 0, -1];

@@ -1,4 +1,4 @@
-import get from './api';
+import get from '../api';
 import {splitLines} from './utils';
 import {groupBy, keyBy, sum} from 'lodash';
 

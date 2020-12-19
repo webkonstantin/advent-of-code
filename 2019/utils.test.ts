@@ -1,4 +1,4 @@
-const { lcm } = require('./dist/utils');
+import { lcm } from "./utils";
 
 test('lcm', () => {
   expect(lcm(2,5)).toBe(10);

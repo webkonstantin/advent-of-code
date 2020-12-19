@@ -1,20 +1,36 @@
+import assert from 'assert';
 import get from './api';
 
-function runA() {
-  //
+const day = '0';
+
+function prepareInput(input: string) {
+    return input;
 }
 
-function runB() {
-  //
+
+function runA(input: Input) {
+    //
 }
+
+function runB(input: Input) {
+    //
+}
+
+// assert.equal(0, runA(prepareInput(``)));
+// assert.equal(0, runB(prepareInput(``)));
+
+// assert.equal(0, runA(prepareInput(``)));
+// assert.equal(0, runB(prepareInput(``)));
+
+type Input = ReturnType<typeof prepareInput>;
 
 const run = async () => {
-  const data = await get('2019/day/_/input');
+    const input = prepareInput(await get(`2020/day/${day}/input`));
 
-  console.log(runA());
-  console.log(runB());
+    console.log(runA(input));
+    console.log(runB(input));
 };
 
 if (require.main === module) {
-  run();
+    run().catch(console.error);
 }

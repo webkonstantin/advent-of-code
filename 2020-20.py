@@ -1,5 +1,4 @@
 from collections import defaultdict
-from functools import lru_cache
 from math import sqrt
 import fileinput
 import itertools
@@ -16,26 +15,21 @@ for line in lines:
         tiles[tile_id].append(line)
 
 
-@lru_cache(maxsize=1000)
 def get_edges(tid, flip):
     tile = tiles[tid]
-
     edges = [
         tile[0],  # top
         [row[-1] for row in tile],  # r
         tile[-1][::-1],  # b
         [row[0] for row in tile][::-1],  # l
     ]
-
     if flip:
         edges[1], edges[3] = edges[3][::-1], edges[1][::-1]
         edges[0] = edges[0][::-1]
         edges[2] = edges[2][::-1]
-
     return edges
 
 
-@lru_cache(maxsize=100000)
 def get_edge(position, direction):
     tid, flip, rotation = position
     edges = get_edges(tid, flip)
@@ -47,15 +41,11 @@ LEFT_EDGES = defaultdict(set)
 for tid, tile in tiles.items():
     for flip, rotation in itertools.product([False, True], range(0, 4)):
         pos = (tid, flip, rotation)
-        e = get_edge(pos, 0)
-        TOP_EDGES[e].add(pos)
-        e = get_edge(pos, 3)
-        LEFT_EDGES[e].add(pos)
-
+        TOP_EDGES[get_edge(pos, 0)].add(pos)
+        LEFT_EDGES[get_edge(pos, 3)].add(pos)
 
 width = int(sqrt(len(tiles)))
 placed = []  # (tid, flip, rotation)
-PLACED = set()
 
 
 def tiles_can_place():
@@ -72,12 +62,12 @@ def tiles_can_place():
 
     if set_:
         for pos in set_:
-            if not pos[0] in PLACED:
+            if not pos[0] in next(zip(*placed)):
                 yield pos
         return
 
     for tid, tile in tiles.items():
-        if not tid in PLACED:
+        if not tid in (p[0] for p in placed):
             for flip, rotation in itertools.product([False, True], range(0, 4)):
                 position = (tid, flip, rotation)
                 yield position
@@ -87,13 +77,11 @@ def place():
     if len(placed) == len(tiles):
         return True
     for position in tiles_can_place():
-        PLACED.add(position[0])
         placed.append(position)
         if place():
             return True
         else:
             placed.pop()
-            PLACED.remove(position[0])
 
 
 def do_rotate(m, rotation=1):

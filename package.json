@@ -6,7 +6,7 @@
     "watch": "run-p 'build --watch' 'test --watch'"
   },
   "dependencies": {
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "itertools": "^1.6.1",
     "js-combinatorics": "^0.5.4",
     "lodash": "^4.17.20",

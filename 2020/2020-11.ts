@@ -1,5 +1,5 @@
-import get from './api';
-import { splitLines } from './utils';
+import get from '../api';
+import { splitLines } from '../utils';
 import assert from 'assert';
 
 const day = '11';

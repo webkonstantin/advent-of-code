@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { fromPairs } from 'lodash';
-import get from './api';
+import get from '../api';
 
 function runA(data: string) {
     return data.split(/\n\n/).filter(p => {

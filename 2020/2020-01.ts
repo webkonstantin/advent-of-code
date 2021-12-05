@@ -1,6 +1,6 @@
-import get from './api';
+import get from '../api';
 import assert from 'assert';
-import { splitLines } from './utils';
+import { splitLines } from '../utils';
 
 function runA(data: string): number {
     const arr = splitLines(data).map(n => Number(n)).sort((a, b) => a - b);

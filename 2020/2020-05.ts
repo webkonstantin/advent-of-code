@@ -1,6 +1,6 @@
 import assert from 'assert';
-import get from './api';
-import { splitLines } from './utils';
+import get from '../api';
+import { splitLines } from '../utils';
 // import { range } from 'lodash';
 
 const day = '5';

@@ -17,7 +17,7 @@ function runA(input: Input) {
         if (!(x1 === x2 || y1 === y2)) {
             continue;
         }
-        const len = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+        const len = Math.abs(x2 - x1 || y2 - y1);
         const dir = [(x2 - x1) / len, (y2 - y1) / len];
         for (let i = 0; i <= len; i++) {
             const [x, y] = [x1 + i * dir[0], y1 + i * dir[1]];
@@ -33,9 +33,7 @@ function runB(input: Input) {
     for (const [a, b] of input) {
         const [x1, y1] = a;
         const [x2, y2] = b;
-        const len = (x1 === x2 || y1 === y2)
-            ? Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2))
-            : Math.abs(x2 - x1);
+        const len = Math.abs(x2 - x1 || y2 - y1);
         const dir = [(x2 - x1) / len, (y2 - y1) / len];
         for (let i = 0; i <= len; i++) {
             const [x, y] = [x1 + i * dir[0], y1 + i * dir[1]];

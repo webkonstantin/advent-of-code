@@ -1,5 +1,6 @@
 import get from '../api';
 import assert from 'assert';
+import { sum } from 'lodash';
 
 const day = '6';
 
@@ -28,7 +29,6 @@ function runA(input: Input) {
 }
 
 function runB(input: Input, days: number = 256) {
-    let s = input.length;
     const d: Record<number, number> = {}; // k=day starts producing, v=N of fish
     for (let f of input) {
         d[f] = (d[f] || 0) + 1;
@@ -41,13 +41,7 @@ function runB(input: Input, days: number = 256) {
             j += 7;
         }
     }
-    for (let [k_, v] of Object.entries(d)) {
-        const k = Number(k_);
-        if (k >= 10) {
-            s += v;
-        }
-    }
-    return s;
+    return sum(Object.values(d));
 }
 
 assert.equal(5934 , runA(prepareInput(`3,4,3,1,2`)));

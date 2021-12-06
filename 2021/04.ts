@@ -5,36 +5,36 @@ import { sum } from 'lodash';
 const day = '4';
 
 class Board {
-    _board: number[][];
-    _rows: Record<number, number> = {};
-    _cols: Record<number, number> = {};
-    _set: Set<number>;
+    board: number[][];
+    rows: Record<number, number> = {};
+    cols: Record<number, number> = {};
+    set: Set<number>;
 
     constructor(str: string) {
-        this._board = str.split('\n').map(row => row.trim().split(/ +/).map(Number));
-        this._set = new Set(this._board.flat());
+        this.board = str.split('\n').map(row => row.trim().split(/ +/).map(Number));
+        this.set = new Set(this.board.flat());
     }
 
     draw(num: number) {
-        this._set.delete(num);
-        for (let row in this._board) {
-            for (let col in this._board[row]) {
-                if (this._board[row][col] === num) {
-                    this._rows[row] = (this._rows[row] || 0) + 1;
-                    this._cols[col] = (this._cols[col] || 0) + 1;
+        this.set.delete(num);
+        for (let row in this.board) {
+            for (let col in this.board[row]) {
+                if (this.board[row][col] === num) {
+                    this.rows[row] = (this.rows[row] || 0) + 1;
+                    this.cols[col] = (this.cols[col] || 0) + 1;
                 }
             }
         }
     }
 
     wins() {
-        for (let row in this._rows) {
-            if (this._rows[row] === this._board.length) {
+        for (let row in this.rows) {
+            if (this.rows[row] === this.board.length) {
                 return true;
             }
         }
-        for (let col in this._cols) {
-            if (this._cols[col] === this._board.length) {
+        for (let col in this.cols) {
+            if (this.cols[col] === this.board.length) {
                 return true;
             }
         }
@@ -54,7 +54,7 @@ function runA([nums, boards]: Input) {
             const board = boards[i];
             board.draw(num);
             if (board.wins()) {
-                return num * sum([...board._set]);
+                return num * sum([...board.set]);
             }
         }
     }
@@ -71,7 +71,7 @@ function runB([nums, boards]: Input) {
             const board = boards[i];
             board.draw(num);
             if (board.wins()) {
-                last = num * sum([...board._set]);
+                last = num * sum([...board.set]);
                 won.add(i);
             }
         }

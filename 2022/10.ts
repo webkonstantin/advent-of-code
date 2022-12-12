@@ -12,19 +12,16 @@ function runA(input: Input) {
     let sum = 0;
     let cycles = 1;
     let x = 1;
-    const track = (cycle: number, x: number) => {
-        if (((cycle - 20) % 40) === 0) {
-            sum += cycle * x;
-        }
+    const tick = () => {
+        if ((cycles - 20) % 40 === 0) sum += cycles * x;
     };
     for (const line of input) {
-        track(cycles, x);
+        tick();
         cycles += 1;
         if (line !== 'noop') {
-            const val = Number(line.split(' ')[1]);
-            track(cycles, x);
+            tick();
             cycles += 1;
-            x += val;
+            x += Number(line.split(' ')[1]);
         }
     }
     return sum;
@@ -35,20 +32,19 @@ function runB(input: Input) {
     let cycles = 1;
     let x = 1;
     const lines: string[] = [];
-    const track = (cycle: number, x: number) => {
-        const left = (cycle - 1) % w;
-        const top = Math.floor((cycle - 1) / w);
+    const tick = () => {
+        const left = (cycles - 1) % w;
+        const top = Math.floor((cycles - 1) / w);
         lines[top] = lines[top] || '';
-        lines[top] += Math.abs(left - x) <= 1 ? '#' : '.';
+        lines[top] += Math.abs(left - x) <= 1 ? '#' : ' ';
     };
     for (const line of input) {
-        track(cycles, x);
+        tick();
         cycles += 1;
         if (line !== 'noop') {
-            const val = Number(line.split(' ')[1]);
-            track(cycles, x);
+            tick();
             cycles += 1;
-            x += val;
+            x += Number(line.split(' ')[1]);
         }
     }
     return lines.join('\n');
@@ -207,7 +203,7 @@ assert.strictEqual(`
 ####....####....####....####....####....
 #####.....#####.....#####.....#####.....
 ######......######......######......####
-#######.......#######.......#######.....`.trim(), runB(prepareInput(ex)));
+#######.......#######.......#######.....`.trim().replace(/\./g, ' '), runB(prepareInput(ex)));
 
 type Input = ReturnType<typeof prepareInput>;
 

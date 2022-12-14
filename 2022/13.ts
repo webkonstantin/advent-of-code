@@ -38,16 +38,13 @@ function runA(input: Input) {
 }
 
 function runB(input: Input) {
-    const div1 = [[2]];
-    div1._div = true;
-    const div2 = [[6]];
-    div2._div = true;
+    const divs = [[[2]], [[6]]];
     input = input.flat();
-    input.push(div1, div2);
+    input.push(...divs);
     input.sort(cmp);
     let m = 1;
     for (let i = 0; i < input.length; i++) {
-        if (input[i]._div) {
+        if (divs.includes(input[i])) {
             m *= i + 1;
         }
     }

@@ -1,5 +1,5 @@
-import * as fs from 'fs';
 import * as assert from 'assert';
+import { getInput } from './get-input';
 
 function part1(input: string) {
     const [instructions, nodes] = input.split('\n\n');
@@ -79,7 +79,7 @@ assert.equal(part2(`LR
 22Z = (22B, 22B)
 XXX = (XXX, XXX)`), 6);
 
-const input = fs.readFileSync('input08.txt', 'utf8').trim();
+const input = await getInput(8);
 
 console.log(part1(input));
 console.log(part2(input));

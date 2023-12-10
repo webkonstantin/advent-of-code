@@ -11,6 +11,10 @@ export const getInput = async (day: number) => {
     const cookie = `session=${process.env.AOC_SESSION_ID};`;
     const response = await fetch(url, { headers: { cookie } });
     const text = await response.text();
+    if (!response.ok) {
+        console.error(text);
+        throw new Error(`Failed to fetch input for day ${day}`);
+    }
     fs.writeFileSync(path, text);
     return text.trim();
 };

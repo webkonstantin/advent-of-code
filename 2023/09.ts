@@ -20,9 +20,11 @@ function part2(input: string) {
 
 const input = await getInput(9);
 
-const sample = `0 3 6 9 12 15
+const sample = `
+0 3 6 9 12 15
 1 3 6 10 15 21
-10 13 16 21 30 45`.trim();
+10 13 16 21 30 45
+`.trim();
 
 assert.equal(part1(sample), 114);
 assert.equal(part2(sample), 2);

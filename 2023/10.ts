@@ -42,10 +42,12 @@ const OPPOSITE = {
 
 // const adj = ([x, y]: [number, number]) => Object.values(DIRS).map(([dx, dy]) => [x + dx, y + dy]);
 
+type Point = [number, number];
+
 function part1(input: string) {
     const G = input.split('\n').map(s => s.split(''));
     const [W, H] = [G[0].length, G.length];
-    let S = [0, 0] as [number, number];
+    let S = [0, 0] as Point;
     for (let x = 0; x < W; x++) {
         for (let y = 0; y < H; y++) {
             if (G[y][x] === 'S') {
@@ -53,7 +55,7 @@ function part1(input: string) {
             }
         }
     }
-    const inBounds = ([x, y]: [number, number]) => x >= 0 && x < W && y >= 0 && y < H;
+    const inBounds = ([x, y]: Point) => x >= 0 && x < W && y >= 0 && y < H;
     // console.log(S);
     for (let dir in DIRS) {
         let [x, y] = S;
@@ -117,7 +119,7 @@ const mp = memo((x: number, y: number) => [x, y]);
 function part2(input: string) {
     const G = input.split('\n').map(s => s.split(''));
     const [W, H] = [G[0].length, G.length];
-    let S = [0, 0] as [number, number];
+    let S = [0, 0] as Point;
     for (let x = 0; x < W; x++) {
         for (let y = 0; y < H; y++) {
             if (G[y][x] === 'S') {
@@ -125,19 +127,19 @@ function part2(input: string) {
             }
         }
     }
-    const inBounds = ([x, y]: [number, number]) => x >= 0 && x < W && y >= 0 && y < H;
+    const inBounds = ([x, y]: Point) => x >= 0 && x < W && y >= 0 && y < H;
     // N: [0, -1] => E: [1, 0]
-    const rotateR = ([dx, dy]: [number, number]): [number, number] => [-dy, dx];
+    const rotateR = ([dx, dy]: Point): Point => [-dy, dx];
     // N: [0, -1] => W: [-1, 0]
-    const rotateL = ([dx, dy]: [number, number]): [number, number] => [dy, -dx];
+    const rotateL = ([dx, dy]: Point): Point => [dy, -dx];
     const sumVectors = <T extends number[]>(...args: T[]) => zip(...args).map(sum) as T;
 
     const getLoop = function () {
         for (let dir in DIRS) {
             let [x, y] = S;
-            const loop: [number, number][] = [];
-            const R: [number, number][] = [];
-            const L: [number, number][] = [];
+            const loop: Point[] = [];
+            const R: Point[] = [];
+            const L: Point[] = [];
             while (true) {
                 const [dx, dy] = DIRS[dir];
                 x += dx;
@@ -146,11 +148,19 @@ function part2(input: string) {
 
                 loop.push([x, y]);
                 L.push(sumVectors(
-                    [x, y] as [number, number],
+                    [x - dx, y - dy] as Point,
+                    rotateL([dx, dy]),
+                ));
+                L.push(sumVectors(
+                    [x, y] as Point,
                     rotateL([dx, dy]),
                 ));
                 R.push(sumVectors(
-                    [x, y] as [number, number],
+                    [x - dx, y - dy] as Point,
+                    rotateR([dx, dy]),
+                ));
+                R.push(sumVectors(
+                    [x, y] as Point,
                     rotateR([dx, dy]),
                 ));
 
@@ -170,7 +180,36 @@ function part2(input: string) {
         }
     };
     const { loop, R, L } = getLoop();
-    console.log(loop, R, L);
+    const count = (points: Point[]) => {
+        let visited = new Set<string>();
+        const queue = [...points];
+        let inbound = true;
+        while (queue.length) {
+            const [x, y] = queue.pop();
+            const key = mp(x, y).toString();
+            if (visited.has(key)) continue;
+            visited.add(key);
+            for (const [dx, dy] of Object.values(DIRS)) {
+                const [nx, ny] = [x + dx, y + dy];
+                if (inBounds([nx, ny])) {
+                    if (!loop.some(([x2, y2]) => x2 === nx && y2 === ny)) {
+                        queue.push([nx, ny]);
+                    }
+                } else {
+                    inbound = false;
+                }
+            }
+        }
+        return [visited.size, inbound];
+    };
+    // console.log(loop, R, L);
+    for (const points of [R, L]) {
+        const [size, inbound] = count(points);
+        // console.log(size, inbound);
+        if (inbound) {
+            return size;
+        }
+    }
 }
 
 const input = await getInput(10);

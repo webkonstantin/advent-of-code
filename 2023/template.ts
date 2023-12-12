@@ -2,6 +2,10 @@ import * as assert from 'assert';
 import { getInput } from './get-input';
 
 function part1(input: string) {
+    const lines = input.split('\n');
+    const paragraphs = input.split('\n\n');
+    const G = lines.map(line => line.split(''));
+    const [W, H] = [G[0].length, G.length];
 }
 
 function part2(input: string) {

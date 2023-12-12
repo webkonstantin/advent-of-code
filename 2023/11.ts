@@ -25,8 +25,10 @@ function part1(input: string, m = 2) {
             if (x1 > x2) [x1, x2] = [x2, x1];
             if (y1 > y2) [y1, y2] = [y2, y1];
             sum += x2 - x1 + y2 - y1;
-            sum += range(x1, x2).filter((x) => emptyCols.has(x)).length * (m - 1);
-            sum += range(y1, y2).filter((y) => emptyRows.has(y)).length * (m - 1);
+            // sum += range(x1, x2).filter((x) => emptyCols.has(x)).length * (m - 1);
+            // sum += range(y1, y2).filter((y) => emptyRows.has(y)).length * (m - 1);
+            sum += [...emptyCols.keys()].filter(col => col > x1 && col < x2).length * (m - 1);
+            sum += [...emptyRows.keys()].filter(row => row > y1 && row < y2).length * (m - 1);
         }
     }
     return sum;

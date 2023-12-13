@@ -2,83 +2,73 @@ import * as assert from 'assert';
 import { getInput } from './get-input';
 import { sum } from 'lodash-es';
 
-const getCount2 = (arr: string, groups: number[]) => {
-    // recursive
-    // const m = arr.match(/([\?#]+)/g);
-    // console.log(arr, m);
-
-    console.log(arr, groups);
-    if (groups.length === 0) return Number(arr.indexOf('#') === -1);
-    const m = arr.match(/\?|#/);
-    if (!m) return 0;
-
-    const char = m[0];
-    const i = m.index;
-    console.log({ char, i, arr });
-    arr = arr.slice(i);
-    console.log({ arr });
-
-    if (char === '#') {
-        // ensure that the group is valid
-        const requiredGroupLength = groups[0];
-        const group = arr.substr(i, requiredGroupLength);
-    }
-
-    return 0;
-};
-
-const getCount = (arr: string, groups: number[]) => {
-    const a = arr.split('');
+const getCountSlow = (str: string, groups: number[]) => {
+    const arr = str.split('');
     let count = 0;
-    const go = (i = 0) => {
-        if (i === a.length) {
-            const re = new RegExp(
-                '^\\.*' +
-                groups.map(g => `#{${g}}`).join('\\.+')
-                + '\\.*$'
-            );
-            const m = a.join('').match(re);
-            if (m) {
-                count++;
-                // console.log(a.join(''), { re, m });
-            }
+    const backtrack = (i = 0) => {
+        if (i === arr.length) {
+            const re = new RegExp(`^\\.*${groups.map(g => `#{${g}}`).join('\\.+')}\\.*$`);
+            if (arr.join('').match(re)) count++;
             return;
         }
-        if (a[i] === '?') {
-            a[i] = '#';
-            go(i + 1);
-            a[i] = '.';
-            go(i + 1);
-            a[i] = '?';
+        if (arr[i] === '?') {
+            arr[i] = '#';
+            backtrack(i + 1);
+            arr[i] = '.';
+            backtrack(i + 1);
+            arr[i] = '?';
         } else {
-            go(i + 1);
+            backtrack(i + 1);
         }
     };
-    go();
+    backtrack();
     return count;
 };
 
+const getCountFast = (str: string, groups: number[]) => {
+    const cache = new Map<string, number>();
+    const dp = (strIndex = 0, groupsIndex = 0) => {
+        const key = `${strIndex},${groupsIndex}`;
+        if (cache.has(key)) return cache.get(key);
+        if (groupsIndex === groups.length) {
+            return Number(str.indexOf('#', strIndex) === -1);
+        }
+        const groupLength = groups[groupsIndex];
+        let dotsInWindow = 0;
+        let count = 0;
+        let l = strIndex;
+        for (let r = strIndex; r < str.length; r++) {
+            str[r] === '.' && dotsInWindow++;
+            const windowLength = r - l + 1;
+            if (windowLength < groupLength) continue;
+            if (str[r + 1] !== '#' && dotsInWindow === 0) {
+                count += dp(r + 2, groupsIndex + 1);
+            }
+            if (str[l] === '#') break;
+            str[l] === '.' && dotsInWindow--;
+            l++;
+        }
+        cache.set(key, count);
+        return count;
+    };
+    return dp();
+};
+
 function part1(input: string) {
-    const lines = input.split('\n').map(line => {
-        const [arr, groups_] = line.split(' ');
-        const groups = groups_.split(',').map(Number);
-        const count = getCount(arr, groups);
-        return { arr, groups, count };
-    });
-    // console.log(lines);
-    return sum(lines.map(line => line.count));
+    return sum(input.split('\n').map(line => {
+        const [str, groups] = line.split(' ');
+        return getCountFast(str, groups.split(',').map(Number));
+    }));
 }
 
-// function part2(input: string) {
-//     const lines = input.split('\n').map(line => {
-//         const [arr, groups_] = line.split(' ');
-//         const groups = groups_.split(',').map(Number);
-//         const count = getCount2(arr, groups);
-//         return { arr, groups, count };
-//     });
-//     // console.log(lines);
-//     return sum(lines.map(line => line.count));
-// }
+function part2(input: string) {
+    return sum(input.split('\n').map(line => {
+        const [str, groups] = line.split(' ');
+        const groups5 = Array(5).fill(groups).join(',');
+        const str5 = Array(5).fill(str).join('?');
+        return getCountFast(str5, groups5.split(',').map(Number));
+    }));
+}
 
 const input = await getInput(12);
 
@@ -93,7 +83,7 @@ const sample = `
 
 assert.equal(part1('?###???????? 3,2,1'), 10);
 assert.equal(part1(sample), 21);
-// assert.equal(part2(sample), );
+assert.equal(part2(sample), 525152);
 
 console.log(part1(input));
-// console.log(part2(input));
+console.log(part2(input));

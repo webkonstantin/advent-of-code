@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import { fileURLToPath } from 'url';
 
 export const getInput = async (day: number) => {
+    if (!day) throw new Error('Missing day');
     const __dirname = fileURLToPath(new URL('.', import.meta.url));
     const path = `${__dirname}/inputs/${day.toString().padStart(2, '0')}.txt`;
     if (fs.existsSync(path)) {

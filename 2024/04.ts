@@ -17,9 +17,9 @@ const part1 = (input: string) => {
     const c = G[y][x];
     if (c !== WORD[i]) return;
     if (i === WORD.length - 1) {
-      visited[y][x] = true;
-      console.log(visited.map((row, y) => row.map((v, x) => v ? G[y][x] : '.').join('')).join('\n')+ '\n');
-      visited[y][x] = false;
+      // visited[y][x] = true;
+      // console.log(visited.map((row, y) => row.map((v, x) => v ? G[y][x] : '.').join('')).join('\n')+ '\n');
+      // visited[y][x] = false;
       sum++;
       return;
     }
@@ -36,7 +36,7 @@ const part1 = (input: string) => {
       for (const dx of [-1, 0, 1]) {
         for (const dy of [-1, 0, 1]) {
           if (dx === 0 && dy === 0) continue;
-          dfs(x, y, 0);
+          dfs(x, y, dx, dy, 0);
         }
       }
     }
@@ -58,3 +58,5 @@ SAXAMASAAA
 MAMMMXMMMM
 MXMXAXMASX
 `.trim()), 18);
+
+console.log(part1(input));

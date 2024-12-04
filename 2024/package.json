@@ -1,0 +1,14 @@
+{
+  "type": "module",
+  "dependencies": {
+    "es-toolkit": "^1.29.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.14"
+  },
+  "nodemonConfig": {
+    "execMap": {
+      "ts": "bun"
+    }
+  }
+}

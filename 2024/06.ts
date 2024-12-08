@@ -62,17 +62,14 @@ assert.equal(part1(`
 console.log(part1(input));
 
 const part2 = (input: string) => {
-  const G = input.split('\n');
+  const G = input.split('\n').map((r) => r.split(''));
   const [W, H] = [G[0].length, G.length];
 
   const visited = new Set<string>();
-  const obstacles = new Set<string>();
-
-  let start: [number, number];
 
   const go = (x: number, y: number, dir: [number, number]) => {
     while (true) {
-      visited.add(`${x},${y},${dir}`);
+      visited.add(`${x},${y}`);
       const [dx, dy] = dir;
       const [nx, ny] = [x + dx, y + dy];
       const c = G[ny]?.[nx];
@@ -80,32 +77,55 @@ const part2 = (input: string) => {
       if (c === '#') {
         dir = turnCW(dir);
         continue;
-      } else if ([nx, ny].toString() !== start.toString()) {
-        // check what if it was #
-        const [tx, ty] = turnCW(dir);
-        const [ntx, nty] = [x + tx, y + ty];
-        if (visited.has(`${ntx},${nty},${[tx, ty]}`)) {
-          obstacles.add(`${nx},${ny}`);
-        }
       }
       x = nx;
       y = ny;
     }
   };
 
-  for (let y = 0; y < H; y++) {
+  let start: [number, number];
+  let startDir: [number, number];
+  start: for (let y = 0; y < H; y++) {
     for (let x = 0; x < W; x++) {
       const c = G[y][x];
       if (dirs[c]) {
         start = [x, y];
+        startDir = dirs[c];
         go(x, y, dirs[c]);
+        break start;
       }
     }
   }
 
-  console.log(obstacles);
+  const hasCycle = (x: number, y: number, dir: [number, number]) => {
+    const visited2 = new Set<string>();
+    while (true) {
+      const key = `${x},${y},${dir}`;
+      if (visited2.has(key)) return true;
+      visited2.add(key);
+      const [dx, dy] = dir;
+      const [nx, ny] = [x + dx, y + dy];
+      const c = G[ny]?.[nx];
+      if (!c) return;
+      if (c === '#') {
+        dir = turnCW(dir);
+        continue;
+      }
+      x = nx;
+      y = ny;
+    }
+  };
 
-  return obstacles.size;
+  let a = 0;
+  for (const xy of visited) {
+    const [x, y] = xy.split(',').map(Number);
+    if ([x, y].toString() === start.toString()) continue;
+    G[y][x] = '#';
+    if (hasCycle(start[0], start[1], startDir)) a++;
+    G[y][x] = '.';
+  }
+
+  return a;
 };
 
 assert.equal(part2(`

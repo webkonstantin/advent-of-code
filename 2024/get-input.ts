@@ -18,7 +18,8 @@ export const getInput = async (day: number) => {
     }
     const url = `https://adventofcode.com/2024/day/${day}/input`;
     const cookie = `session=${process.env.AOC_SESSION_ID};`;
-    const response = await fetch(url, { headers: { cookie } });
+    const userAgent = 'https://github.com/webkonstantin/advent-of-code';
+    const response = await fetch(url, { headers: { cookie, 'user-agent': userAgent } });
     const text = await response.text();
     if (!response.ok) {
         console.error(text);

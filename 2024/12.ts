@@ -50,3 +50,58 @@ EEEC
 `.trim()), 140);
 
 console.log(part1(input));
+
+const part2 = (input: string) => {
+  const G = input.split('\n');
+  const [W, H] = [G[0].length, G.length];
+
+  let sum = 0;
+  const visited = new Set<string>();
+
+  function go(x: number, y: number): number {
+    let p = 0;
+    if (visited.has(`${x},${y}`)) return 0;
+    const c = G[y]?.[x];
+    if (!c) return 0;
+    visited.add(`${x},${y}`);
+    for (const [dx, dy] of dirs) {
+      const [nx, ny] = [x + dx, y + dy];
+      const nc = G[ny]?.[nx];
+      if (nc === c) {
+        p += go(nx, ny);
+      } else {
+        p++;
+      }
+    }
+    return p;
+  }
+
+  const regions = {} as Record<string, number>;
+
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+
+      const l = x;
+      let r = x;
+      const row = G[y];
+      while (r < W && row[r] === row[x]) r++;
+
+
+      // let prevVisited = visited.size;
+      // const perimeter = go(x, y);
+      // const area = visited.size - prevVisited;
+      // sum += area * perimeter;
+    }
+  }
+
+  return sum;
+};
+
+assert.equal(part2(`
+AAAA
+BBCD
+BBCC
+EEEC
+`.trim()), 80);
+
+console.log(part2(input));

@@ -1,16 +1,12 @@
 import { getInput } from './get-input';
 import * as assert from 'node:assert';
+import { ints } from './utils';
 
 const input = await getInput(13);
 
-// 3 tokens to push the A button and 1 token to push the B button.
-
 const part1 = (input: string) => {
   const machines = input.split('\n\n').map((machine) => {
-    const [a, b, p] = machine.split('\n').map((line) => {
-      const [x, y] = line.match(/\d+/g).map(Number);
-      return [x, y];
-    });
+    const [a, b, p] = machine.split('\n').map((line) => ints(line));
     return [a, b, p];
   });
   return machines.map(([a, b, p]) => {
